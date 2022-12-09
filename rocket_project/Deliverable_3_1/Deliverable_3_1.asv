@@ -1,0 +1,13 @@
+addpath(fullfile('..', 'src'));
+%% TODO: This file should produce all the plots for the deliverable
+
+Ts = 1/20; % Sample time
+rocket = Rocket(Ts);
+[xs, us] = rocket.trim();
+sys = rocket.linearize(xs, us);
+[sys_x, sys_y, sys_z, sys_roll] = rocket.decompose(sys, xs, us);
+% Design MPC controller
+H = ...; % Horizon length in seconds
+mpc x = MpcControl x(sys x, Ts, H);
+% Get control input
+u x = mpc x.get u(x)
