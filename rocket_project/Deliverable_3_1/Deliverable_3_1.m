@@ -1,9 +1,8 @@
-%addpath(fullfile('..', 'src'));
-
 %% TODO: This file should produce all the plots for the deliverable
 
 Ts = 1/20; % Sample time
-x0 = [0; pi/2];
+x0 = [0; pi/4]; % initial state
+
 rocket = Rocket(Ts);
 [xs, us] = rocket.trim();
 sys = rocket.linearize(xs, us);
@@ -12,19 +11,22 @@ sys = rocket.linearize(xs, us);
 %% Simulate the roll system
 % Design MPC controller
 H = 4; % Horizon length in seconds
-sim_duration = 20;
+% for H<3 there is overshoot
+sim_duration = 10;
 num_steps = sim_duration/Ts;
 mpc_roll = MpcControl_roll(sys_roll, Ts, H);
 % Get control input
 u_roll = mpc_roll.get_u(x0);
 
-% Evaluate once and plot optimal open−loop trajectory,
+% simulate open-loop trajectory (apply controller once and use the whole
+% input sequence)
 % pad last input to get consistent size with time and state
 [u, T_opt, X_opt, U_opt] = mpc_roll.get_u(x0);
 U_opt(:,end+1) = nan;
 ph = rocket.plotvis_sub(T_opt, X_opt, U_opt, sys_roll, xs, us); % Plot as usual
 
-% simulate in closed loop
+% simulate in closed loop (apply the controller after every step and use
+% only the first control input)
 U_closed_loop = zeros(1,sim_duration/Ts+1);
 X_closed_loop = zeros(2,sim_duration/Ts+1);
 X_closed_loop(:,1) = x0;
