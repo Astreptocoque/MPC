@@ -20,4 +20,4 @@ H = 8; % Horizon length in seconds
 mpc_roll = MpcControl_roll(sys_roll, Ts, H);
 
 % Get control input
-u_roll = mpc_roll.get_u();
+u_roll = mpc_roll.get_u(xs);

@@ -23,7 +23,7 @@ classdef MpcControlBase
         end
         
         % Compute the MPC controller
-        function [u, T, X, U] = get_u(mpc, x, ref)
+        function [u, T, X, U] = get_u(mpc, x, ref) % ref is goal, x is start
             
             % Compute the target ...
             if nargin >= 3

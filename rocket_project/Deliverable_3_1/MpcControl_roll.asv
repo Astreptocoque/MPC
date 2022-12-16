@@ -33,8 +33,8 @@ classdef MpcControl_roll < MpcControlBase
             %       the DISCRETE-TIME MODEL of your system
             
             % SET THE PROBLEM CONSTRAINTS con AND THE OBJECTIVE obj HERE
-            Q = 20*eye(nx);
-            R = eye(nu);
+            Q = eye(nx);
+            R = 2*eye(nu);
             obj = 0;
             con = [];
             for k = 1:N-1
