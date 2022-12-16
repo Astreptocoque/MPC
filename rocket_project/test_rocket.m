@@ -14,8 +14,10 @@ rocket = Rocket(Ts);
 sys = rocket.linearize(xs, us); % Linearize the nonlinear model about trim poin
 
 %%
+[sys_x, sys_y, sys_z, sys_roll] = rocket.decompose(sys, xs, us);
+
 H = 8; % Horizon length in seconds
-mpc_roll = MpcControl_roll(sys_x, Ts, H);
+mpc_roll = MpcControl_roll(sys_roll, Ts, H);
 
 % Get control input
-u_roll = mpc_roll.get_u(x);
+u_roll = mpc_roll.get_u();
