@@ -122,12 +122,11 @@ classdef MpcControl_z < MpcControlBase
             hu = [80-56.66667; -(50-56.66667)];
 
 
-            Qt_pos = 1  % Q target position
+            Qt_pos = 1;  % Q target position
             obj = (mpc.C*xs-ref)'*Qt_pos*(mpc.C*xs-ref);
 %             Qt_states = eye(nx); % Q target states
 %             obj = (xs-ref.*[0;1])'*Qt_states*(xs-ref.*[0;1]);
-            con = [xs == mpc.A*xs + mpc.B*us];
-            con = [con, Hu*us <= hu];
+            con = [xs == mpc.A*xs + mpc.B*us, Hu*us <= hu];
 
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
