@@ -48,7 +48,7 @@ classdef MpcControl_z < MpcControlBase
 
             % constraints
             Hu = [1; -1];
-            hu = [80-56.666; -(50-56.666)];
+            hu = [80-56.66667; -(50-56.66667)];
 
             % costs for the LQR controller
             Q = 10.*eye(nx);
