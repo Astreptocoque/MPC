@@ -48,10 +48,10 @@ classdef MpcControl_z < MpcControlBase
 
             % constraints
             Hu = [1; -1];
-            hu = [80; -50];
+            hu = [80-56.666; -(50-56.666)];
 
             % costs for the LQR controller
-            Q = eye(nx);
+            Q = 10.*eye(nx);
             R = eye(nu);
 
             % K is the LQR controller, P is the final cost
@@ -74,7 +74,7 @@ classdef MpcControl_z < MpcControlBase
             con = [];
 
             for k = 1:N-1
-                con = [con, X(:,k+1) == mpc.A*X(:,k) + mpc.B*U(:,k)];
+                con = [con, X(:,k+1) == mpc.A*X(:,k) + mpc.B*U(:,k)];   % here X is already x*-xs because we are in the linearized shifted system
                 con = [con, Hu*U(:,k) <= hu];
                 obj   = obj + (X(:,k)-x_ref)'*Q*(X(:,k)-x_ref) + (U(:,k)-u_ref)'*R*(U(:,k)-u_ref);
             end

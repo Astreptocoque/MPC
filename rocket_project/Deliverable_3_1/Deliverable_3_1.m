@@ -3,7 +3,7 @@
 Ts = 1/20; % Sample time
 
 rocket = Rocket(Ts);
-[xs, us] = rocket.trim();
+[xs, us] = rocket.trim();   % stable point
 sys = rocket.linearize(xs, us);
 [sys_x, sys_y, sys_z, sys_roll] = rocket.decompose(sys, xs, us);
 
@@ -113,7 +113,7 @@ ph = rocket.plotvis_sub(T, X_sub, U_sub, sys_y, xs, us);
 %% Simulate the z system
 % Design MPC controller
 H = 4;
-sim_duration = 20;
+sim_duration = 10;
 num_steps = sim_duration/Ts;
 
 x0 = [0; -4]; % initial state
@@ -139,7 +139,7 @@ for i=1:num_steps
     U_closed_loop(:,i) = mpc_z.get_u(X_closed_loop(:,i));
     X_closed_loop(:,i+1) = mpc_z.A*X_closed_loop(:,i) + mpc_z.B*U_closed_loop(:,i);
 end
-ph = rocket.plotvis_sub(0:Ts:sim_duration, X_closed_loop, U_closed_loop, sys_z, xs, us);
+ph = rocket.plotvis_sub(0:Ts:sim_duration, X_closed_loop, U_closed_loop+us(3), sys_z, xs, us);
 
 % simulate the system closed loop (solution)
 [T, X_sub, U_sub] = rocket.simulate_f(sys_z, x0, sim_duration, @mpc_z.get_u, 0);
