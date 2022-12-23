@@ -42,7 +42,7 @@ classdef MpcControl_roll < MpcControlBase
                 con = [con, X(:,k+1) == mpc.A*X(:,k) + mpc.B*U(:,k)];
                 obj   = obj + (X(:,k)-x_ref)'*Q*(X(:,k)-x_ref) + (U(:,k)-u_ref)'*R*(U(:,k)-u_ref);
             end
-            obj = obj + X(:,N)'*Pf*X(:,N);
+            obj = obj + (X(:,N)-x_ref)'*Pf*(X(:,N)-x_ref);
             
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -74,9 +74,10 @@ classdef MpcControl_roll < MpcControlBase
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
             % You can use the matrices mpc.A, mpc.B, mpc.C and mpc.D
-            obj = 0;
-            con = [xs == 0, us == 0];
-            
+            Q = eye(nx);
+            obj = (xs - ref.*[0;1])'*Q*(xs - ref.*[0;1]);
+            con = [xs == mpc.A*xs + mpc.B*us, us >= -20, us <= 20];
+
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
