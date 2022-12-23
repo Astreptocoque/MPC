@@ -1,12 +1,15 @@
 %% TODO: This file should produce all the plots for the deliverable
 addpath(fullfile('src'));
 addpath(fullfile('Deliverable_4_1'),"-begin")
-addpath(fullfile('Deliverable_3_2'))
+warning('off','MATLAB:rmpath:DirNotFound')
 rmpath(fullfile('Deliverable_3_1'))
+rmpath(fullfile('Deliverable_3_2'))
 
 clear; close all;
 
 Ts = 1/20; % Sample time
+H = 4; % Horizon length in seconds
+% for H<3 there is overshoot
 
 rocket = Rocket(Ts);
 [xs, us] = rocket.trim();   % stable point
@@ -20,6 +23,7 @@ mpc_roll = MpcControl_roll(sys_roll, Ts, H);
 mpc_x = MpcControl_x(sys_x, Ts, H);
 mpc_y = MpcControl_y(sys_y, Ts, H);
 mpc_z = MpcControl_z(sys_z, Ts, H);
+
 
 % Merge four sub−system controllers into one full−system controller
 mpc = rocket.merge_lin_controllers(xs, us, mpc_x, mpc_y, mpc_z, mpc_roll);
@@ -40,6 +44,6 @@ Tf = 30;
 [T, X, U, Ref] = rocket.simulate(x0, Tf, @mpc.get_u, ref);
 
 % Visualize
-rocket.anim_rate = 1; % Increase this to make the animation faster
+rocket.anim_rate = 10; % Increase this to make the animation faster
 ph = rocket.plotvis(T, X, U, Ref);
-ph.fig.Name = 'Merged lin. MPC in nonlinear simulation'; % Set a figure titl
+ph.fig.Name = 'Merged lin. MPC in nonlinear simulation'; % Set a figure title
