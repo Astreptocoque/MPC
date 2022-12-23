@@ -3,6 +3,7 @@ addpath(fullfile('src'));
 addpath(fullfile('Deliverable_3_1'),"-begin")
 warning('off','MATLAB:rmpath:DirNotFound')
 rmpath(fullfile('Deliverable_3_2'))
+rmpath(fullfile('Deliverable_4_1'))
 
 clear; close all;
 

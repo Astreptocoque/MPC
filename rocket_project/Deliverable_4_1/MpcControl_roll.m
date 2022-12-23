@@ -33,7 +33,8 @@ classdef MpcControl_roll < MpcControlBase
             %       the DISCRETE-TIME MODEL of your system
             
             % SET THE PROBLEM CONSTRAINTS con AND THE OBJECTIVE obj HERE
-            Q = 20*eye(nx);
+            Q = 10*eye(nx);
+            Q(2,2) = 10*Q(2,2);
             R = eye(nu);
             [~,Pf,~] = dlqr(mpc.A, mpc.B, Q, R);
             obj = 0;
