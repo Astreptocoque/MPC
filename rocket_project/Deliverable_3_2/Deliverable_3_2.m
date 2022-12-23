@@ -1,4 +1,8 @@
 %% TODO: This file should produce all the plots for the deliverable
+addpath(fullfile('src'));
+addpath(fullfile('Deliverable_3_2'),"-begin")
+rmpath(fullfile('Deliverable_3_1'))
+
 clear; close all;
 
 Ts = 1/20; % Sample time
