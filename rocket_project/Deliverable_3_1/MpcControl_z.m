@@ -66,8 +66,8 @@ classdef MpcControl_z < MpcControlBase
 
             % the terminal set of the controller K in closed loop
             Poly_xu = polytope(Hxu, hxu);
-            %term_set = max_contr_invar_set(Poly_xu, Ak);
-            %[Hxf, hxf] = double(term_set); % terminal constraint
+            term_set = max_contr_invar_set(Poly_xu, Ak);
+            [Hxf, hxf] = double(term_set); % terminal constraint
 
             % SET THE PROBLEM CONSTRAINTS con AND THE OBJECTIVE obj HERE
             obj = 0;
@@ -79,7 +79,7 @@ classdef MpcControl_z < MpcControlBase
                 obj   = obj + (X(:,k)-x_ref)'*Q*(X(:,k)-x_ref) + (U(:,k)-u_ref)'*R*(U(:,k)-u_ref);
             end
             obj = obj + (X(:,N)-x_ref)'*Pf*(X(:,N)-x_ref);
-            %con = [con, Hxf*X(:,N) <= hxf];
+            con = [con, Hxf*X(:,N) <= hxf];
             
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
