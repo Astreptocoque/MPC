@@ -46,7 +46,7 @@ H = 4;
 sim_duration = 10;
 num_steps = sim_duration/Ts;
 
-x0 = [0; 0; 0; -4]; % initial state
+x0 = [0; 0; 0; 4]; % initial state
 
 mpc_x = MpcControl_x(sys_x, Ts, H);
 % Get control input
@@ -116,7 +116,7 @@ H = 4;
 sim_duration = 10;
 num_steps = sim_duration/Ts;
 
-x0 = [0; -4]; % initial state
+x0 = [0; 4]; % initial state
 
 mpc_z = MpcControl_z(sys_z, Ts, H);
 % Get control input
