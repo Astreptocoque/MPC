@@ -22,7 +22,7 @@ H = 4; % Horizon length in seconds
 sim_duration = 10;
 num_steps = sim_duration/Ts;
 x0 = [0; 0]; % initial state
-x_ref = deg2rad(-35);
+x_ref = deg2rad(35);
 mpc_roll = MpcControl_roll(sys_roll, Ts, H);
 % Get control input
 u_roll = mpc_roll.get_u(x0, x_ref);
@@ -33,6 +33,7 @@ u_roll = mpc_roll.get_u(x0, x_ref);
 [u, T_opt, X_opt, U_opt] = mpc_roll.get_u(x0, x_ref);
 U_opt(:,end+1) = nan;
 ph = rocket.plotvis_sub(T_opt, X_opt, U_opt, sys_roll, xs, us); % Plot as usual
+exportgraphics(ph.fig, "Deliverable_3_2/Figures/3.2_roll_subsystem_openloop.png")
 
 % simulate in closed loop (apply the controller after every step and use
 % only the first control input)
@@ -44,6 +45,7 @@ for i=1:num_steps
     X_closed_loop(:,i+1) = mpc_roll.A*X_closed_loop(:,i) + mpc_roll.B*U_closed_loop(:,i);
 end
 ph = rocket.plotvis_sub(0:Ts:sim_duration, X_closed_loop, U_closed_loop, sys_roll, xs, us); % Plot as usual
+exportgraphics(ph.fig, "Deliverable_3_2/Figures/3.2_roll_subsystem_closedloop.png")
 
 % simulate the system closed loop (solution)
 [T, X_sub, U_sub] = rocket.simulate_f(sys_roll, x0, sim_duration, @mpc_roll.get_u, x_ref);
@@ -69,6 +71,7 @@ u_x = mpc_x.get_u(x0, x_ref);
 [u, T_opt, X_opt, U_opt] = mpc_x.get_u(x0, x_ref);
 U_opt(:,end+1) = nan;
 ph = rocket.plotvis_sub(T_opt, X_opt, U_opt, sys_x, xs, us, x_ref);
+exportgraphics(ph.fig, "Deliverable_3_2/Figures/3.2_x_subsystem_openloop.png")
 
 % simulate in closed loop (apply the controller after every step and use
 % only the first control input)
@@ -81,6 +84,7 @@ for i=1:num_steps
     X_closed_loop(:,i+1) = mpc_x.A*X_closed_loop(:,i) + mpc_x.B*U_closed_loop(:,i);
 end
 ph = rocket.plotvis_sub(0:Ts:sim_duration, X_closed_loop, U_closed_loop, sys_x, xs, us, x_ref);
+exportgraphics(ph.fig, "Deliverable_3_2/Figures/3.2_x_subsystem_closedloop.png")
 
 % simulate the system closed loop (solution)
 [T, X_sub, U_sub] = rocket.simulate_f(sys_x, x0, sim_duration, @mpc_x.get_u, x_ref);
@@ -106,6 +110,7 @@ u_y = mpc_y.get_u(x0, x_ref);
 [u, T_opt, X_opt, U_opt] = mpc_y.get_u(x0, x_ref);
 U_opt(:,end+1) = nan;
 ph = rocket.plotvis_sub(T_opt, X_opt, U_opt, sys_y, xs, us);
+exportgraphics(ph.fig, "Deliverable_3_2/Figures/3.2_y_subsystem_openloop.png")
 
 % simulate in closed loop (apply the controller after every step and use
 % only the first control input)
@@ -118,6 +123,7 @@ for i=1:num_steps
     X_closed_loop(:,i+1) = mpc_y.A*X_closed_loop(:,i) + mpc_y.B*U_closed_loop(:,i);
 end
 ph = rocket.plotvis_sub(0:Ts:sim_duration, X_closed_loop, U_closed_loop, sys_y, xs, us);
+exportgraphics(ph.fig, "Deliverable_3_2/Figures/3.2_y_subsystem_closedloop.png")
 
 % simulate the system closed loop (solution)
 [T, X_sub, U_sub] = rocket.simulate_f(sys_y, x0, sim_duration, @mpc_y.get_u, x_ref);
@@ -143,6 +149,7 @@ u_z = mpc_z.get_u(x0);
 [u, T_opt, X_opt, U_opt] = mpc_z.get_u(x0, pos_ref);
 U_opt(:,end+1) = nan;
 ph = rocket.plotvis_sub(T_opt, X_opt, U_opt+us(3), sys_z, xs, us, pos_ref);
+exportgraphics(ph.fig, "Deliverable_3_2/Figures/3.2_z_subsystem_openloop.png")
 
 % simulate in closed loop (apply the controller after every step and use
 % only the first control input)
@@ -155,6 +162,7 @@ for i=1:num_steps
     X_closed_loop(:,i+1) = mpc_z.A*X_closed_loop(:,i) + mpc_z.B*(U_closed_loop(:,i));
 end
 ph = rocket.plotvis_sub(0:Ts:sim_duration, X_closed_loop, U_closed_loop+us(3), sys_z, xs, us, pos_ref);
+exportgraphics(ph.fig, "Deliverable_3_2/Figures/3.2_z_subsystem_closedloop.png")
 
 % simulate the system closed loop (solution)
 [T, X_sub, U_sub] = rocket.simulate_f(sys_z, x0, sim_duration, @mpc_z.get_u, pos_ref);
