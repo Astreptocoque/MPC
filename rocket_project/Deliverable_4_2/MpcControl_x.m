@@ -44,8 +44,8 @@ classdef MpcControl_x < MpcControlBase
 %             Q(3,3) = Q(3,3)*0.2;  % speed
             Q(4,4) = Q(4,4)*10;     % position
             R = eye(nu);
-            S = 100*eye(2);         % slack - very soft but very short 
-
+            S = 1*eye(2);         % slack - doesn't seem to do a diff with 1 or 100
+           
             % K is the LQR controller, P is the final cost
             [K,Pf,~] = dlqr(mpc.A, mpc.B, Q, R);
             K = -K;
