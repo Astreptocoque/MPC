@@ -52,8 +52,9 @@ classdef MpcControl_z < MpcControlBase
 
             % costs for the LQR controller
             Q = 10.*eye(nx);
-            Q(2,2) = Q(2,2)*10;
-            R = 1*eye(nu);
+            Q(2,2) = Q(2,2)*50;
+            Q(1,1) = Q(1,1);
+            R = 0.1*eye(nu);
 
             % K is the LQR controller, P is the final cost
             [K,Pf,~] = dlqr(mpc.A, mpc.B, Q, R);
