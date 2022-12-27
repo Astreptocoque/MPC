@@ -143,7 +143,7 @@ u_z = mpc_z.get_u(x0);
 % pad last input to get consistent size with time and state
 [u, T_opt, X_opt, U_opt] = mpc_z.get_u(x0);
 U_opt(:,end+1) = nan;
-ph = rocket.plotvis_sub(T_opt, X_opt, U_opt, sys_z, xs, us);
+ph = rocket.plotvis_sub(T_opt, X_opt, U_opt+us(3), sys_z, xs, us);
 exportgraphics(ph.fig, "Deliverable_3_1/Figures/3.1_z_subsystem_openloop.png")
 
 
