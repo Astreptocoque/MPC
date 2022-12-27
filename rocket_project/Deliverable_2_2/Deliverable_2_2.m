@@ -1,1 +1,0 @@
-[sys_x, sys_y, sys_z, sys_roll] = rocket.decompose(sys, xs, us)
