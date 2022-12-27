@@ -25,6 +25,8 @@ classdef MpcControl_y < MpcControlBase
             % Predicted state and input trajectories
             X = sdpvar(nx, N);
             U = sdpvar(nu, N-1);
+            E = sdpvar(2, N);
+
             
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
@@ -40,9 +42,10 @@ classdef MpcControl_y < MpcControlBase
 
             % costs for the LQR controller
             Q = 1*eye(nx);
-            Q(4,4) = Q(4,4)*1.2;
-            Q(3,3) = Q(3,3)*0.2;
+%             Q(3,3) = Q(3,3)*0.2;  % speed
+            Q(4,4) = Q(4,4)*10;     % position
             R = eye(nu);
+            S = 100*eye(2);         % slack - very soft but very short 
 
             % K is the LQR controller, P is the final cost
             [K,Pf,~] = dlqr(mpc.A, mpc.B, Q, R);
@@ -65,8 +68,9 @@ classdef MpcControl_y < MpcControlBase
 
             for k = 1:N-1
                 con = [con, X(:,k+1) == mpc.A*X(:,k) + mpc.B*U(:,k)];
-                con = [con, Hu*U(:,k) <= hu, Hx*X(:,k) <= hx];
-                obj   = obj + (X(:,k)-x_ref)'*Q*(X(:,k)-x_ref) + (U(:,k)-u_ref)'*R*(U(:,k)-u_ref);
+                con = [con, Hu*U(:,k) <= hu, Hx*X(:,k) <= hx+E(:,k)];
+                con = [con, E(:,k) >= 0];
+                obj   = obj + (X(:,k)-x_ref)'*Q*(X(:,k)-x_ref) + (U(:,k)-u_ref)'*R*(U(:,k)-u_ref) + E(:,k)'*S*E(:,k);
             end
             obj = obj + (X(:,N)-x_ref)'*Pf*(X(:,N)-x_ref);
             con = [con, Hxf*X(:,N) <= hxf];
