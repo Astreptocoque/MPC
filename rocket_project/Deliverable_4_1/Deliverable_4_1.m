@@ -1,4 +1,4 @@
-%% TODO: This file should produce all the plots for the deliverable
+%% Setup path to have no conflict
 addpath(fullfile('src'));
 addpath(fullfile('Deliverable_4_1'),"-begin")
 warning('off','MATLAB:rmpath:DirNotFound')
@@ -8,6 +8,8 @@ rmpath(fullfile('Deliverable_4_2'))
 rmpath(fullfile('Deliverable_5_1'))
 rmpath(fullfile('Deliverable_6_1'))
 clear; close all;
+
+%% This file should produce all the plots for the deliverable
 
 Ts = 1/20; % Sample time
 H = 4; % Horizon length in seconds
@@ -51,3 +53,4 @@ Tf = 30;
 rocket.anim_rate = 10; % Increase this to make the animation faster
 ph = rocket.plotvis(T, X, U, Ref);
 ph.fig.Name = 'Merged lin. MPC in nonlinear simulation'; % Set a figure title
+

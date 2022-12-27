@@ -1,3 +1,13 @@
-addpath(fullfile('..', 'src'));
+%% Setup path to have no conflict
+addpath(fullfile('src'));
+addpath(fullfile('Deliverable_5_1'),"-begin")
+warning('off','MATLAB:rmpath:DirNotFound')
+rmpath(fullfile('Deliverable_3_1'))
+rmpath(fullfile('Deliverable_3_2'))
+rmpath(fullfile('Deliverable_4_1'))
+rmpath(fullfile('Deliverable_4_2'))
+rmpath(fullfile('Deliverable_6_1'))
 
-%% TODO: This file should produce all the plots for the deliverable
+clear; close all;
+
+%% This file should produce all the plots for the deliverable
