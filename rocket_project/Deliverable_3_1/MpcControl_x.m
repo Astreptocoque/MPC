@@ -39,7 +39,7 @@ classdef MpcControl_x < MpcControlBase
             hu = [deg2rad(15); deg2rad(15)];
 
             % costs for the LQR controller
-            Q = 2*eye(nx);
+            Q = 1*eye(nx);
             R = eye(nu);
 
             % K is the LQR controller, P is the final cost
@@ -55,26 +55,6 @@ classdef MpcControl_x < MpcControlBase
             % the terminal set of the controller K in closed loop
             Poly_xu = polytope(Hxu, hxu);
             term_set = max_contr_invar_set(Poly_xu,Ak);
-            
-            % plot the polytope
-            f = figure();
-            sgtitle("Terminal set polytope dimensions projections - x")
-            subplot(2,3,1)
-            term_set.projection(1:2).plot();
-            title("Dims 1 & 2")
-            subplot(2,3,2)
-            term_set.projection(2:3).plot();
-            title("Dims 2 & 3")
-            subplot(2,3,3)
-            term_set.projection(3:4).plot();
-            title("Dims 3 & 4")
-            subplot(2,3,4)
-            term_set.projection([3,1]).plot();
-            title("Dims 3 & 1")
-            subplot(2,3,5)
-            term_set.projection([4,1]).plot();
-            title("Dims 4 & 1")
-            exportgraphics(f, "Deliverable_3_1/Figures/3.1_x_terminal_set.png")
 
             [Hxf, hxf] = double(term_set); % terminal constraint
 

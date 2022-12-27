@@ -17,11 +17,15 @@ rocket = Rocket(Ts);
 sys = rocket.linearize(xs, us);
 [sys_x, sys_y, sys_z, sys_roll] = rocket.decompose(sys, xs, us);
 
+sim_duration_master = 20;
+sim_horizon_master = 2;
+sim_start_point = 4;
+
 %% Simulate the roll system
 % Design MPC controller
-H = 4; % Horizon length in seconds
+H = 2; % Horizon length in seconds
 % for H<3 there is overshoot
-sim_duration = 10;
+sim_duration = sim_duration_master;
 num_steps = sim_duration/Ts;
 x0 = [0; deg2rad(35)]; % initial state
 mpc_roll = MpcControl_roll(sys_roll, Ts, H);
@@ -54,11 +58,11 @@ ph = rocket.plotvis_sub(T, X_sub, U_sub, sys_roll, xs, us);
 
 %% Simulate the x system
 % Design MPC controller
-H = 4;
-sim_duration = 10;
+H = sim_horizon_master;
+sim_duration = sim_duration_master;
 num_steps = sim_duration/Ts;
 
-x0 = [0; 0; 0; 4]; % initial state
+x0 = [0; 0; 0; sim_start_point]; % initial state
 
 mpc_x = MpcControl_x(sys_x, Ts, H);
 % Get control input
@@ -91,11 +95,11 @@ ph = rocket.plotvis_sub(T, X_sub, U_sub, sys_x, xs, us);
 
 %% Simulate the y system
 % Design MPC controller
-H = 4;
-sim_duration = 10;
+H = sim_horizon_master;
+sim_duration = sim_duration_master;
 num_steps = sim_duration/Ts;
 
-x0 = [0; 0; 0; 4]; % initial state
+x0 = [0; 0; 0; sim_start_point]; % initial state
 
 mpc_y = MpcControl_y(sys_y, Ts, H);
 % Get control input
@@ -128,11 +132,11 @@ ph = rocket.plotvis_sub(T, X_sub, U_sub, sys_y, xs, us);
 
 %% Simulate the z system
 % Design MPC controller
-H = 4;
-sim_duration = 10;
+H = sim_horizon_master;
+sim_duration = sim_duration_master;
 num_steps = sim_duration/Ts;
 
-x0 = [0; 4]; % initial state
+x0 = [0; sim_start_point]; % initial state
 
 mpc_z = MpcControl_z(sys_z, Ts, H);
 % Get control input

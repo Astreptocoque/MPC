@@ -51,7 +51,7 @@ classdef MpcControl_z < MpcControlBase
             hu = [80-56.66667; -(50-56.66667)];
 
             % costs for the LQR controller
-            Q = 10.*eye(nx);
+            Q = 1*eye(nx);
             R = eye(nu);
 
             % K is the LQR controller, P is the final cost
@@ -68,12 +68,6 @@ classdef MpcControl_z < MpcControlBase
             Poly_xu = polytope(Hxu, hxu);
             term_set = max_contr_invar_set(Poly_xu, Ak);
             [Hxf, hxf] = double(term_set); % terminal constraint
-
-             % plot the polytope
-            f = figure();
-            title("Terminal set polytope - z")
-            term_set.plot()
-            exportgraphics(f, "Deliverable_3_1/Figures/3.1_z_terminal_set.png")
 
             % SET THE PROBLEM CONSTRAINTS con AND THE OBJECTIVE obj HERE
             obj = 0;
