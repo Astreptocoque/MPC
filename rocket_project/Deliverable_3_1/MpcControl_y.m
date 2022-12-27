@@ -57,6 +57,26 @@ classdef MpcControl_y < MpcControlBase
             term_set = max_contr_invar_set(Poly_xu, Ak);
             [Hxf, hxf] = double(term_set); % terminal constraint
 
+             % plot the polytope
+            f = figure();
+            sgtitle("Terminal set polytope dimensions projections - y")
+            subplot(2,3,1)
+            term_set.projection(1:2).plot();
+            title("Dims 1 & 2")
+            subplot(2,3,2)
+            term_set.projection(2:3).plot();
+            title("Dims 2 & 3")
+            subplot(2,3,3)
+            term_set.projection(3:4).plot();
+            title("Dims 3 & 4")
+            subplot(2,3,4)
+            term_set.projection([3,1]).plot();
+            title("Dims 3 & 1")
+            subplot(2,3,5)
+            term_set.projection([4,1]).plot();
+            title("Dims 4 & 1")
+            exportgraphics(f, "Deliverable_3_1/Figures/3.1_y_terminal_set.png")
+
             % SET THE PROBLEM CONSTRAINTS con AND THE OBJECTIVE obj HERE
             obj = 0;
             con = [];
