@@ -40,7 +40,9 @@ rocket.mass = 1.794; % Manipulate mass for simulation
 % Simulate
 Tf = 30;
 x0 = zeros(12,1);
-[T, X, U, Ref] = rocket.simulate_est_z(x0, Tf, @mpc.get_u, ref);
+% [T, X, U, Ref] = rocket.simulate(x0, Tf, @mpc.get_u, ref);
+[T, X, U, Ref, Z_hat] = rocket.simulate_est_z(x0, Tf, @mpc.get_u, ref, mpc_z, sys_z);
+% plot(linspace(0.05,30,601),Z_hat); figure
 
 % Visualize
 rocket.anim_rate = 10; % Increase this to make the animation faster
