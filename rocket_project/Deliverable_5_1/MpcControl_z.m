@@ -56,22 +56,22 @@ classdef MpcControl_z < MpcControlBase
             R = eye(nu);
 
             % K is the LQR controller, P is the final cost
-            [K,Pf,~] = dlqr(mpc.A, mpc.B, Q, R);
-            K = -K;
-            Ak = mpc.A+mpc.B*K;
+            [~,Pf,~] = dlqr(mpc.A, mpc.B, Q, R);
+%             K = -K;
+%             Ak = mpc.A+mpc.B*K;
 
             % the combined constraints of state and input with controller K
             % in closed loop
-            Hxu = Hu*K; hxu = hu;
+%             Hxu = Hu*K; hxu = hu;
 
             % the terminal set of the controller K in closed loop
-            Poly_xu = polytope(Hxu, hxu);
-            term_set = max_contr_invar_set(Poly_xu, Ak);
-            [Hxf, hxf] = double(term_set); % terminal constraint
+%             Poly_xu = polytope(Hxu, hxu);
+%             term_set = max_contr_invar_set(Poly_xu, Ak);
+%             [Hxf, hxf] = double(term_set); % terminal constraint
 
             obj = 0; con = [];
             for k = 1:N-1
-                con = [con, X(:,k+1) == mpc.A*X(:,k) + mpc.B*U(:,k) + d_est, Hu*U(:,k) <= hu];
+                con = [con, X(:,k+1) == mpc.A*X(:,k) + mpc.B*(U(:,k) + d_est), Hu*U(:,k) <= hu];
                 obj = obj + (X(:,k)-x_ref)'*Q*(X(:,k)-x_ref) + (U(:,k)-u_ref)'*R*(U(:,k)-u_ref);
             end
             obj = obj + (X(:,N)-x_ref)'*Pf*(X(:,N)-x_ref);
@@ -114,8 +114,8 @@ classdef MpcControl_z < MpcControlBase
             % You can use the matrices mpc.A, mpc.B, mpc.C and mpc.D
 
             Hu = [1; -1]; hu = [80-56.66667; -(50-56.66667)];
-            obj = us^2; % (mpc.C*xs + d_est - ref)'*(mpc.C*xs + d_est - ref);
-            con = [xs == mpc.A*xs + mpc.B*(us + d_est), mpc.C*xs == ref - d_est, Hu*us <= hu];
+            obj = (mpc.C*xs - ref)'*(mpc.C*xs - ref);
+            con = [xs == mpc.A*xs + mpc.B*(us + d_est), Hu*us <= hu];
 
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -139,7 +139,7 @@ classdef MpcControl_z < MpcControlBase
 
             A_bar = [mpc.A, mpc.B; zeros(1,size(mpc.A,2)), 1];
             B_bar = [mpc.B; zeros(1,size(mpc.B,2))];
-            C_bar = [mpc.C, eye(size(mpc.C,1))];
+            C_bar = [mpc.C, zeros(size(mpc.C,1))];
             L = -place(A_bar',C_bar',[0.5,0.6,0.7])';
 
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
