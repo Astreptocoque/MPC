@@ -35,8 +35,8 @@ mpc = rocket.merge_lin_controllers(xs, us, mpc_x, mpc_y, mpc_z, mpc_roll);
 % Evaluate once and plot optimal open−loop trajectory,
 % % pad last input to get consistent size with time and state
 x0 = zeros(12,1);
-% ref4 = [2 2 2 deg2rad(40)]';   % default
-ref4 = [-0.51 0.28 0.1 deg2rad(40)]';   % first segment of EPFL
+ref4 = [2 2 2 deg2rad(40)]';   % default
+% ref4 = [-0.51 0.28 0.1 deg2rad(40)]';   % first segment of EPFL
 
 [u, T_opt, X_opt, U_opt] = mpc.get_u(x0, ref4);
 U_opt(:,end+1) = nan;

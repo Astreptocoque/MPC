@@ -13,7 +13,7 @@ clear; close all;
 %% This file should produce all the plots for the deliverable
 
 Ts = 1/20; % Sample time
-H = 4; % Horizon length in seconds
+H = 1; % Horizon length in seconds
 % for H<3 there is overshoot
 
 rocket = Rocket(Ts);
@@ -33,11 +33,11 @@ mpc_z = MpcControl_z(sys_z, Ts, H);
 % Merge four sub−system controllers into one full−system controller
 mpc = rocket.merge_lin_controllers(xs, us, mpc_x, mpc_y, mpc_z, mpc_roll);
 
-% FOR DEBUGGING : Evaluate once and plot optimal open−loop trajectory,
+% % FOR DEBUGGING : Evaluate once and plot optimal open−loop trajectory,
 % % pad last input to get consistent size with time and state
 % x0 = zeros(12,1);
-% % ref4 = [2 2 2 deg2rad(40)]';   % default
-% ref4 = [-0.51 0.28 0.1 deg2rad(40)]';   % first segment of EPFL
+% ref4 = [2 2 2 deg2rad(40)]';   % default
+% % ref4 = [-0.51 0.28 0.1 deg2rad(40)]';   % first segment of EPFL
 % 
 % [u, T_opt, X_opt, U_opt] = mpc.get_u(x0, ref4);
 % U_opt(:,end+1) = nan;

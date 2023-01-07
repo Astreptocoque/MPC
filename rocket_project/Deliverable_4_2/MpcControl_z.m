@@ -51,25 +51,26 @@ classdef MpcControl_z < MpcControlBase
             hu = [80-56.66667; -(50-56.66667)];
 
             % costs for the LQR controller
-            Q = 10.*eye(nx);
-            Q(1,1) = Q(1,1)*1;      % speed
-            Q(2,2) = Q(2,2)*100;   % position
+            Q = eye(nx);
+            Q(1,1) = Q(1,1)*10;      % speed
+            Q(2,2) = Q(2,2)*200;     % position
             R = eye(nu);
+            R(1,1) = 0.001;
 
-            % K is the LQR controller, P is the final cost
+%             % K is the LQR controller, P is the final cost
             [K,Pf,~] = dlqr(mpc.A, mpc.B, Q, R);
-            K = -K;
-            Ak = mpc.A+mpc.B*K;
+%             K = -K;
+%             Ak = mpc.A+mpc.B*K;
 
             % the combined constraints of state and input with controller K
             % in closed loop
-            Hxu = Hu*K;
-            hxu = hu;
+%             Hxu = Hu*K;
+%             hxu = hu;
 
             % the terminal set of the controller K in closed loop
-            Poly_xu = polytope(Hxu, hxu);
-            term_set = max_contr_invar_set(Poly_xu, Ak);
-            [Hxf, hxf] = double(term_set); % terminal constraint
+%             Poly_xu = polytope(Hxu, hxu);
+%             term_set = max_contr_invar_set(Poly_xu, Ak);
+%             [Hxf, hxf] = double(term_set); % terminal constraint
 
             % SET THE PROBLEM CONSTRAINTS con AND THE OBJECTIVE obj HERE
             obj = 0;
@@ -80,8 +81,8 @@ classdef MpcControl_z < MpcControlBase
                 con = [con, Hu*U(:,k) <= hu];
                 obj   = obj + (X(:,k)-x_ref)'*Q*(X(:,k)-x_ref) + (U(:,k)-u_ref)'*R*(U(:,k)-u_ref);
             end
-            obj = obj + (X(:,N)-x_ref)'*Pf*(X(:,N)-x_ref);
-            con = [con, Hxf*X(:,N) <= hxf];
+%             obj = obj + (X(:,N)-x_ref)'*Pf*(X(:,N)-x_ref);
+%             con = [con, Hxf*X(:,N) <= hxf];
             
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
