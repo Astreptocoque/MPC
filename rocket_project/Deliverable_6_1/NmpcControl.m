@@ -81,7 +81,7 @@ classdef NmpcControl < handle
                 k3 = rocket.f(X_sym(:,k) + h/2*k2, U_sym(:,k));
                 k4 = rocket.f(X_sym(:,k) + h*k3, U_sym(:,k));
                 eq_constr = [eq_constr; X_sym(:,k) + h/6*(k1 + 2*k2 + 2*k3 + k4) - X_sym(:,k+1)];
-                ineq_constr = [ineq_constr; X_sym(:,k+1)-ubx; lbx-X_sym(:,k+1); U_sym(:,k)-ubu; lbu-U_sym(:,k)];
+%                 ineq_constr = [ineq_constr; X_sym(:,k+1)-ubx; lbx-X_sym(:,k+1); U_sym(:,k)-ubu; lbu-U_sym(:,k)];
                 cost = cost + (X_sym(xyzb,k)-ref_sym)'*Qq*(X_sym(xyzb,k)-ref_sym);
             end
 %             ineq_constr = [ineq_constr; Hxf*X_sym(:,N)-hxf];

@@ -13,7 +13,7 @@ clear; close all;
 %% This file should produce all the plots for the deliverable
 Ts = 1/20;
 rocket = Rocket(Ts);
-H = 4; % Horizon length in seconds
+H = 1; % Horizon length in seconds
 nmpc = NmpcControl(rocket, H);
 
 % Evaluate once and plot optimal open−loop trajectory,
