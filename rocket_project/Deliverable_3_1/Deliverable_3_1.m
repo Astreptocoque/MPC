@@ -21,7 +21,7 @@ sys = rocket.linearize(xs, us);
 % Design MPC controller
 H = 4; % Horizon length in seconds
 % for H<3 there is overshoot
-sim_duration = 10;
+sim_duration = 8;
 num_steps = sim_duration/Ts;
 x0 = [0; deg2rad(35)]; % initial state
 mpc_roll = MpcControl_roll(sys_roll, Ts, H);
@@ -55,7 +55,7 @@ ph = rocket.plotvis_sub(T, X_sub, U_sub, sys_roll, xs, us);
 %% Simulate the x system
 % Design MPC controller
 H = 4;
-sim_duration = 10;
+sim_duration = 8;
 num_steps = sim_duration/Ts;
 
 x0 = [0; 0; 0; 4]; % initial state
@@ -92,7 +92,7 @@ ph = rocket.plotvis_sub(T, X_sub, U_sub, sys_x, xs, us);
 %% Simulate the y system
 % Design MPC controller
 H = 4;
-sim_duration = 10;
+sim_duration = 8;
 num_steps = sim_duration/Ts;
 
 x0 = [0; 0; 0; 4]; % initial state

@@ -51,23 +51,23 @@ classdef MpcControl_z < MpcControlBase
             hu = [80-56.66667; -(50-56.66667)];
 
             % costs for the LQR controller
-            Q = 10.*eye(nx);
-            R = eye(nu);
+            Q = diag([2,10]);
+            R = 0.1*diag(1);
 
             % K is the LQR controller, P is the final cost
             [K,Pf,~] = dlqr(mpc.A, mpc.B, Q, R);
-%             K = -K;
-%             Ak = mpc.A+mpc.B*K;
+            K = -K;
+            Ak = mpc.A+mpc.B*K;
 
             % the combined constraints of state and input with controller K
             % in closed loop
-%             Hxu = Hu*K;
-%             hxu = hu;
+            Hxu = Hu*K;
+            hxu = hu;
 
             % the terminal set of the controller K in closed loop
-%             Poly_xu = polytope(Hxu, hxu);
-%             term_set = max_contr_invar_set(Poly_xu, Ak);
-%             [Hxf, hxf] = double(term_set); % terminal constraint
+            Poly_xu = polytope(Hxu, hxu);
+            term_set = max_contr_invar_set(Poly_xu, Ak);
+            [Hxf, hxf] = double(term_set); % terminal constraint
 
             % SET THE PROBLEM CONSTRAINTS con AND THE OBJECTIVE obj HERE
             obj = 0;
@@ -79,7 +79,7 @@ classdef MpcControl_z < MpcControlBase
                 obj   = obj + (X(:,k)-x_ref)'*Q*(X(:,k)-x_ref) + (U(:,k)-u_ref)'*R*(U(:,k)-u_ref);
             end
             obj = obj + (X(:,N)-x_ref)'*Pf*(X(:,N)-x_ref);
-%             con = [con, Hxf*X(:,N) <= hxf];
+            con = [con, Hxf*X(:,N) <= hxf + Hxf*x_ref];
             
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -124,8 +124,6 @@ classdef MpcControl_z < MpcControlBase
 
             Qt_pos = 1;  % Q target position
             obj = (mpc.C*xs-ref)'*Qt_pos*(mpc.C*xs-ref);
-%             Qt_states = eye(nx); % Q target states
-%             obj = (xs-ref.*[0;1])'*Qt_states*(xs-ref.*[0;1]);
             con = [xs == mpc.A*xs + mpc.B*us, Hu*us <= hu];
 
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
