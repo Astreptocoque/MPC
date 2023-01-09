@@ -52,10 +52,10 @@ classdef MpcControl_z < MpcControlBase
 
             % costs for the LQR controller
             Q = eye(nx);
-            Q(1,1) = Q(1,1)*10;      % speed
-            Q(2,2) = Q(2,2)*200;     % position
+            Q(1,1) = Q(1,1)*0.2;      % speed
+            Q(2,2) = Q(2,2)*2;     % position
             R = eye(nu);
-            R(1,1) = 0.001;
+            R(1,1) = 0.01;
 
 %             % K is the LQR controller, P is the final cost
             [K,Pf,~] = dlqr(mpc.A, mpc.B, Q, R);
@@ -63,7 +63,7 @@ classdef MpcControl_z < MpcControlBase
 %             Ak = mpc.A+mpc.B*K;
 
             % the combined constraints of state and input with controller K
-            % in closed loop
+%             in closed loop
 %             Hxu = Hu*K;
 %             hxu = hu;
 
@@ -81,7 +81,7 @@ classdef MpcControl_z < MpcControlBase
                 con = [con, Hu*U(:,k) <= hu];
                 obj   = obj + (X(:,k)-x_ref)'*Q*(X(:,k)-x_ref) + (U(:,k)-u_ref)'*R*(U(:,k)-u_ref);
             end
-%             obj = obj + (X(:,N)-x_ref)'*Pf*(X(:,N)-x_ref);
+            obj = obj + (X(:,N)-x_ref)'*Pf*(X(:,N)-x_ref);
 %             con = [con, Hxf*X(:,N) <= hxf];
             
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE

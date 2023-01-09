@@ -13,7 +13,7 @@ clear; close all;
 %% This file should produce all the plots for the deliverable
 
 Ts = 1/20; % Sample time
-H = 1; % Horizon length in seconds
+H = 4; % Horizon length in seconds
 % for H<3 there is overshoot
 
 rocket = Rocket(Ts);
@@ -44,7 +44,8 @@ mpc = rocket.merge_lin_controllers(xs, us, mpc_x, mpc_y, mpc_z, mpc_roll);
 % ph = rocket.plotvis(T_opt, X_opt, U_opt, ref4); % Plot as usual
 
 % Setup reference function
-ref = @(t_, x_) ref_EPFL(t_);
+% ref = @(t_, x_) ref_EPFL(t_);
+ref = @(t_, x_) ref_MPC(t_);
 
 % Simulate
 Tf = 30;

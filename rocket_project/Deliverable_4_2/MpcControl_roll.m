@@ -35,7 +35,7 @@ classdef MpcControl_roll < MpcControlBase
             % SET THE PROBLEM CONSTRAINTS con AND THE OBJECTIVE obj HERE
             Q = eye(nx);
             Q(1,1) = Q(1,1)*1;     % speed
-            Q(2,2) = Q(2,2)*10;     % position
+            Q(2,2) = Q(2,2)*100;     % position
             R = eye(nu);
             R(1,1) = 0.01;
 
