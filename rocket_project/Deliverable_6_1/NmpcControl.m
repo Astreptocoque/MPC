@@ -50,15 +50,8 @@ classdef NmpcControl < handle
             ubu(3,1) = 80; lbu(3,1) = 50; % Pavg
             ubu(4,1) = 20; lbu(4,1) = -20; % Pdiff
 
-            % Cost
-%             Hu = [1; -1]; hu = [80-56.66667; -(50-56.66667)];
-            Q = 10.*eye(nx);
-%             Q(1,1) = Q(1,1)*1; % speed
-%             Q(2,2) = Q(2,2)*100; % position
+            Q = diag([10,10,10,10,10,10,10,10,10,1000,1000,1000]);
             R = eye(nu);
-            xyzb = [10 11 12 5];
-            dq = diag(Q);
-            Qq = diag(dq(xyzb));
 
             % Terminal cost
 %             sys = rocket.linearize();
@@ -69,23 +62,26 @@ classdef NmpcControl < handle
 %             term_set = max_contr_invar_set(Poly_xu, Ak);
 %             [Hxf, hxf] = double(term_set); % terminal constraint
 
-            % Discretization
-            h = rocket.Ts;
+            % Equality constraints (Casadi SX), each entry == 0
+            eq_constr = [X_sym(:,1) - x0_sym(:,1)];
+            % Inequality constraints (Casadi SX), each entry <= 0
+            ineq_constr = [];
 
-            eq_constr = []; % Equality constraints (Casadi SX), each entry == 0
-            ineq_constr = []; % Inequality constraints (Casadi SX), each entry <= 0
             cost = 0;
+            h = rocket.Ts;
+            ref = SX.sym('ref', nx, 1); ref(:) = zeros(size(ref));
+            ref([10 11 12 5]) = ref_sym;
+%             ref(10) = ref_sym(1); ref(11) = ref_sym(2);
+%             ref(12) = ref_sym(3); ref(5) = ref_sym(4);
             for k = 1:N-1
                 k1 = rocket.f(X_sym(:,k), U_sym(:,k));
                 k2 = rocket.f(X_sym(:,k) + h/2*k1, U_sym(:,k));
                 k3 = rocket.f(X_sym(:,k) + h/2*k2, U_sym(:,k));
                 k4 = rocket.f(X_sym(:,k) + h*k3, U_sym(:,k));
                 eq_constr = [eq_constr; X_sym(:,k) + h/6*(k1 + 2*k2 + 2*k3 + k4) - X_sym(:,k+1)];
-%                 ineq_constr = [ineq_constr; X_sym(:,k+1)-ubx; lbx-X_sym(:,k+1); U_sym(:,k)-ubu; lbu-U_sym(:,k)];
-                cost = cost + (X_sym(xyzb,k)-ref_sym)'*Qq*(X_sym(xyzb,k)-ref_sym);
+                cost = cost + (X_sym(:,k)-ref)'*Q*(X_sym(:,k)-ref) + U_sym(:,k)'*R*U_sym(:,k);
             end
-%             ineq_constr = [ineq_constr; Hxf*X_sym(:,N)-hxf];
-            cost = cost + (X_sym(xyzb,N)-ref_sym)'*Qq*(X_sym(xyzb,N)-ref_sym);
+            cost = cost + (X_sym(:,N)-ref)'*Q*(X_sym(:,N)-ref);
 
             % For box constraints on state and input, overwrite entries of
             % lbx, ubx, lbu, ubu defined above
