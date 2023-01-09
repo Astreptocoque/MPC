@@ -33,10 +33,27 @@ classdef MpcControl_roll < MpcControlBase
             %       the DISCRETE-TIME MODEL of your system
             
             % SET THE PROBLEM CONSTRAINTS con AND THE OBJECTIVE obj HERE
-            Q = 10*eye(nx);
-            Q(2,2) = 10*Q(2,2);
-            R = eye(nu);
-            [~,Pf,~] = dlqr(mpc.A, mpc.B, Q, R);
+            Hu = [1; -1];
+            hu = [20; 20];
+            
+            Q = diag([1, 20]);
+            R = diag(0.1);
+            
+             % K is the LQR controller, P is the final cost
+            [K,Pf,~] = dlqr(mpc.A, mpc.B, Q, R);
+            K = -K;
+            Ak = mpc.A+mpc.B*K;
+
+            % the combined constraints of state and input with controller K
+            % in closed loop
+            Hxu = Hu*K;
+            hxu = hu;
+
+            % the terminal set of the controller K in closed loop
+            Poly_xu = polytope(Hxu, hxu);
+            term_set = max_contr_invar_set(Poly_xu, Ak);
+            [Hxf, hxf] = double(term_set); % terminal constraint
+
             obj = 0;
             con = [];
             for k = 1:N-1
@@ -44,6 +61,7 @@ classdef MpcControl_roll < MpcControlBase
                 obj   = obj + (X(:,k)-x_ref)'*Q*(X(:,k)-x_ref) + (U(:,k)-u_ref)'*R*(U(:,k)-u_ref);
             end
             obj = obj + (X(:,N)-x_ref)'*Pf*(X(:,N)-x_ref);
+            con = [con, Hxf*X(:,N) <= hxf];
             
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

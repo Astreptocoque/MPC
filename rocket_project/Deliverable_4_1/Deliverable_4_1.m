@@ -54,3 +54,4 @@ rocket.anim_rate = 10; % Increase this to make the animation faster
 ph = rocket.plotvis(T, X, U, Ref);
 ph.fig.Name = 'Merged lin. MPC in nonlinear simulation'; % Set a figure title
 
+exportgraphics(ph.fig, "Deliverable_4_1/Figures/4.1_tracking_EPFL.png")

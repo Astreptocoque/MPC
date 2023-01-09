@@ -66,12 +66,15 @@ classdef MpcControl_x < MpcControlBase
             term_set.projection(2:3).plot();
             title("Dims 2 & 3")
             subplot(2,3,3)
+            term_set.projection([2,4]).plot();
+            title("Dims 2 & 4")
+            subplot(2,3,4)
             term_set.projection(3:4).plot();
             title("Dims 3 & 4")
-            subplot(2,3,4)
+            subplot(2,3,5)
             term_set.projection([3,1]).plot();
             title("Dims 3 & 1")
-            subplot(2,3,5)
+            subplot(2,3,6)
             term_set.projection([4,1]).plot();
             title("Dims 4 & 1")
             exportgraphics(f, "Deliverable_3_1/Figures/3.1_x_terminal_set.png")

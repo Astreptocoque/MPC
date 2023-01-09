@@ -32,9 +32,34 @@ classdef MpcControl_roll < MpcControlBase
             % NOTE: The matrices mpc.A, mpc.B, mpc.C and mpc.D are
             %       the DISCRETE-TIME MODEL of your system
             
+            % constraints
+            Hu = [1; -1];
+            hu = [20; 20];
+
             % SET THE PROBLEM CONSTRAINTS con AND THE OBJECTIVE obj HERE
             Q = diag([1,20]);
             R = diag(0.1);
+
+             % K is the LQR controller, P is the final cost
+            [K,Pf,~] = dlqr(mpc.A, mpc.B, Q, R);
+            K = -K;
+            Ak = mpc.A+mpc.B*K;
+
+            % the combined constraints of state and input with controller K
+            % in closed loop
+            Hxu = Hu*K;
+            hxu = hu;
+
+            % the terminal set of the controller K in closed loop
+            Poly_xu = polytope(Hxu, hxu);
+            term_set = max_contr_invar_set(Poly_xu, Ak);
+            [Hxf, hxf] = double(term_set); % terminal constraint
+
+             % plot the polytope
+            f = figure();
+            term_set.plot()
+            title("Terminal set polytope - roll")
+            exportgraphics(f, "Deliverable_3_1/Figures/3.1_roll_terminal_set.png")
 
             [~,Pf,~] = dlqr(mpc.A, mpc.B, Q, R);
             obj = 0;
@@ -44,7 +69,8 @@ classdef MpcControl_roll < MpcControlBase
                 obj   = obj + (X(:,k)-x_ref)'*Q*(X(:,k)-x_ref) + (U(:,k)-u_ref)'*R*(U(:,k)-u_ref);
             end
             obj = obj + X(:,N)'*Pf*X(:,N);
-            
+            con = [con, Hxf*X(:,N) <= hxf];
+
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             

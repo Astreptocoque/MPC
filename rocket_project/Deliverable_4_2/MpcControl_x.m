@@ -40,11 +40,13 @@ classdef MpcControl_x < MpcControlBase
             hu = [deg2rad(15); deg2rad(15)];
 
             % costs for the LQR controller
-            Q = 1*eye(nx);
-%             Q(3,3) = Q(3,3)*0.2;  % speed
-            Q(4,4) = Q(4,4)*10;     % position
-            R = eye(nu);
-            S = 1*eye(2);         % slack - doesn't seem to do a diff with 1 or 100
+            Q = diag([1, 1, 1, 10]);    % sharp EPFL
+            R = diag(1);                % sharp EPFL
+            Q = diag([1, 1, 0.2, 10]);  % good EPFL
+            R = diag(10);               % good EPFL
+%             Q = diag([5, 5, 1, 100]); % ~weights from 3.1
+%             R = diag(5);              % ~weights from 3.1
+            S = diag([1,1]);         % slack - doesn't seem to do a diff with 1 or 100
            
             % K is the LQR controller, P is the final cost
             [K,Pf,~] = dlqr(mpc.A, mpc.B, Q, R);
@@ -114,7 +116,7 @@ classdef MpcControl_x < MpcControlBase
             Q = eye(nx);
             obj = (xs - ref.*[0;0;0;1])'*Q*(xs - ref.*[0;0;0;1]);
             con = [xs == mpc.A*xs + mpc.B*us, Hx*xs <= hx, Hu*us <= hu];
-            
+%             con = [xs - ref.*[0;0;0;1] == mpc.A*(xs- ref.*[0;0;0;1]) + mpc.B*us, Hx*(xs- ref.*[0;0;0;1]) <= hx, Hu*us <= hu];
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             

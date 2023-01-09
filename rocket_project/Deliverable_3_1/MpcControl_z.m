@@ -52,7 +52,7 @@ classdef MpcControl_z < MpcControlBase
 
             % costs for the LQR controller
             Q = diag([2,10]);
-            R = 0.1*diag(1);
+            R = diag(0.1);
 
             % K is the LQR controller, P is the final cost
             [K,Pf,~] = dlqr(mpc.A, mpc.B, Q, R);
@@ -71,8 +71,8 @@ classdef MpcControl_z < MpcControlBase
 
              % plot the polytope
             f = figure();
-            title("Terminal set polytope - z")
             term_set.plot()
+            title("Terminal set polytope - z")
             exportgraphics(f, "Deliverable_3_1/Figures/3.1_z_terminal_set.png")
 
             % SET THE PROBLEM CONSTRAINTS con AND THE OBJECTIVE obj HERE
