@@ -57,3 +57,12 @@ ph = rocket.plotvis(T, X, U, Ref);
 ph.fig.Name = 'Merged lin. MPC in nonlinear simulation'; % Set a figure title
 
 exportgraphics(ph.fig, "Deliverable_4_2/Figures/4.2_tracking_EPFL.png")
+
+%% ===== Deliverable 5.1 with mass ======
+rocket.mass = 1.794; % Manipulate mass for simulation
+[T, X, U, Ref] = rocket.simulate(x0, Tf, @mpc.get_u, ref);
+% Visualize
+rocket.anim_rate = 10; % Increase this to make the animation faster
+ph = rocket.plotvis(T, X, U, Ref);
+ph.fig.Name = 'Merged lin. MPC in nonlinear simulation with mass offset'; % Set a figure title
+exportgraphics(ph_4.fig, "Deliverable_5_1/Figures/5.1_without_mass_compensation.png")

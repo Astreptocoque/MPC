@@ -37,8 +37,8 @@ classdef MpcControl_roll < MpcControlBase
             Hu = [1; -1];
             hu = [20; 20];
 
-            Q = diag([10, 100]);    % sharp EPFL
-            R = diag(1);            % sharp EPFL
+%             Q = diag([10, 100]);    % sharp EPFL
+%             R = diag(1);            % sharp EPFL
             Q = diag([1, 10]);      % good EPFL
             R = diag(0.01);          % good EPFL
 %             Q = diag([1, 50]);    % ~weights from 3.1
@@ -66,7 +66,7 @@ classdef MpcControl_roll < MpcControlBase
                 obj   = obj + (X(:,k)-x_ref)'*Q*(X(:,k)-x_ref) + (U(:,k)-u_ref)'*R*(U(:,k)-u_ref);
             end
             obj = obj + (X(:,N)-x_ref)'*Pf*(X(:,N)-x_ref);
-            con = [con, Hxf*X(:,N) <= hxf];
+            con = [con, Hxf*X(:,N) <= hxf + Hxf*x_ref];
 
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -101,7 +101,6 @@ classdef MpcControl_roll < MpcControlBase
             Q = eye(nx);
             obj = (xs - ref.*[0;1])'*Q*(xs - ref.*[0;1]);
             con = [xs == mpc.A*xs + mpc.B*us, us >= -20, us <= 20];
-%             con = [xs-ref == mpc.A*(xs-ref) + mpc.B*us, us >= -20, us <= 20];
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             

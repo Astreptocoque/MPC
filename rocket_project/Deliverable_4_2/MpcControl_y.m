@@ -41,8 +41,8 @@ classdef MpcControl_y < MpcControlBase
             hu = [deg2rad(15); deg2rad(15)]; % constraint on the input d1
 
             % costs for the LQR controller
-            Q = diag([1, 1, 1, 10]);    % sharp EPFL
-            R = diag(1);                % sharp EPFL
+%             Q = diag([1, 1, 1, 10]);    % sharp EPFL
+%             R = diag(1);                % sharp EPFL
             Q = diag([1, 1, 0.2, 10]);  % good EPFL
             R = diag(10);               % good EPFL
 %             Q = diag([5, 5, 1, 100]); % ~weights from 3.1
@@ -75,7 +75,7 @@ classdef MpcControl_y < MpcControlBase
                 obj   = obj + (X(:,k)-x_ref)'*Q*(X(:,k)-x_ref) + (U(:,k)-u_ref)'*R*(U(:,k)-u_ref) + E(:,k)'*S*E(:,k);
             end
             obj = obj + (X(:,N)-x_ref)'*Pf*(X(:,N)-x_ref);
-            con = [con, Hxf*X(:,N) <= hxf];
+            con = [con, Hxf*X(:,N) <= hxf+Hxf*x_ref];
            
             
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
@@ -118,7 +118,7 @@ classdef MpcControl_y < MpcControlBase
             Q = eye(nx);
             obj = (xs - ref.*[0;0;0;1])'*Q*(xs - ref.*[0;0;0;1]);
             con = [xs == mpc.A*xs + mpc.B*us, Hx*xs <= hx, Hu*us <= hu];
-%             con = [xs - ref.*[0;0;0;1] == mpc.A*(xs- ref.*[0;0;0;1]) + mpc.B*us, Hx*(xs- ref.*[0;0;0;1]) <= hx, Hu*us <= hu];
+
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             

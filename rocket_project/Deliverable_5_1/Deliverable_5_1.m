@@ -33,17 +33,18 @@ mpc = rocket.merge_lin_controllers(xs, us, mpc_x, mpc_y, mpc_z, mpc_roll);
 % U_opt(:,end+1) = nan;
 % ph = rocket.plotvis(T_opt, X_opt, U_opt, ref4); % Plot as usual
 
+rocket.mass = 5.794; % Manipulate mass for simulation
+
 % Setup reference function
 ref = @(t_, x_) ref_EPFL(t_);
-rocket.mass = 1.794; % Manipulate mass for simulation
 
 % Simulate
 Tf = 30;
 x0 = zeros(12,1);
-% [T, X, U, Ref] = rocket.simulate(x0, Tf, @mpc.get_u, ref);
 [T, X, U, Ref, Z_hat] = rocket.simulate_est_z(x0, Tf, @mpc.get_u, ref, mpc_z, sys_z);
-% plot(linspace(0.05,30,601),Z_hat); figure
 
 % Visualize
 rocket.anim_rate = 10; % Increase this to make the animation faster
 ph = rocket.plotvis(T, X, U, Ref);
+ph.fig.Name = 'Merged lin. MPC in nonlinear simulation with mass compensation'; % Set a figure title
+exportgraphics(ph.fig, "Deliverable_5_1/Figures/5.1_with_mass_compensation.png")

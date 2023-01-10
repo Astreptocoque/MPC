@@ -51,8 +51,8 @@ classdef MpcControl_z < MpcControlBase
             hu = [80-56.66667; -(50-56.66667)];
 
             % costs for the LQR controller
-            Q = diag([10, 1000]);   % sharp EPFL
-            R = diag(1);            % sharp EPFL
+%             Q = diag([10, 1000]);   % sharp EPFL
+%             R = diag(1);            % sharp EPFL
             Q = diag([10, 200]);    % good EPFL
             R = diag(0.0001);       % good EPFL
 %             Q = diag([5, 700]);   % ~weights from 3.1
@@ -83,7 +83,7 @@ classdef MpcControl_z < MpcControlBase
                 obj   = obj + (X(:,k)-x_ref)'*Q*(X(:,k)-x_ref) + (U(:,k)-u_ref)'*R*(U(:,k)-u_ref);
             end
             obj = obj + (X(:,N)-x_ref)'*Pf*(X(:,N)-x_ref);
-            con = [con, Hxf*X(:,N) <= hxf];
+            con = [con, Hxf*X(:,N) <= hxf + Hxf*x_ref];
             
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -128,9 +128,7 @@ classdef MpcControl_z < MpcControlBase
 
             Qt_pos = 1;  % Q target position
             obj = (mpc.C*xs-ref)'*Qt_pos*(mpc.C*xs-ref);
-%             obj = (mpc.C*(xs-ref))'*Qt_pos*(mpc.C*(xs-ref));
             con = [xs == mpc.A*xs + mpc.B*us, Hu*us <= hu];
-%             con = [xs-ref == mpc.A*(xs-ref) + mpc.B*us, Hu*us <= hu];
             
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

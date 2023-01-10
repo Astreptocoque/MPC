@@ -40,10 +40,9 @@ classdef MpcControl_x < MpcControlBase
             hu = [deg2rad(15); deg2rad(15)];
 
             % costs for the LQR controller
-            Q = 1*eye(nx);
-%             Q(3,3) = Q(3,3)*0.2;  % speed
-            Q(4,4) = Q(4,4)*10;     % position
-            R = eye(nu);
+            Q = diag([1, 1, 0.2, 10]);  % good EPFL
+            R = diag(10);               % good EPFL
+
             S = 1*eye(2);         % slack - doesn't seem to do a diff with 1 or 100
            
             % K is the LQR controller, P is the final cost
@@ -72,7 +71,7 @@ classdef MpcControl_x < MpcControlBase
                 obj   = obj + (X(:,k)-x_ref)'*Q*(X(:,k)-x_ref) + (U(:,k)-u_ref)'*R*(U(:,k)-u_ref) + E(:,k)'*S*E(:,k);
             end
             obj = obj + (X(:,N)-x_ref)'*Pf*(X(:,N)-x_ref);
-            con = [con, Hxf*X(:,N) <= hxf];
+            con = [con, Hxf*X(:,N) <= hxf+Hxf*x_ref];
             
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
