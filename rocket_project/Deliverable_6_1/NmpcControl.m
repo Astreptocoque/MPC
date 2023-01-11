@@ -44,15 +44,25 @@ classdef NmpcControl < handle
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
             
+            % state and input constraints
             ubx(5,1) = deg2rad(80); lbx(5,1) = deg2rad(-80); % beta
             ubu(1,1) = deg2rad(15); lbu(1,1) = deg2rad(-15); % d1
             ubu(2,1) = deg2rad(15); lbu(2,1) = deg2rad(-15); % d2
             ubu(3,1) = 80; lbu(3,1) = 50; % Pavg
             ubu(4,1) = 20; lbu(4,1) = -20; % Pdiff
 
-            Q = diag([1,1,1,1,1,1,1,1,1,100,100,100]);
-            R = 0.1*eye(nu);
+            % weight matrices
+            Q = diag([1,1,1,1,1,10,0.2,0.2,1,10,10,20]);
+            R = diag([10,10,0.0001,0.1]);
 
+            % terminal cost
+            [xs, us] = rocket.trim();
+            sys = rocket.linearize(xs, us);
+            sys_d = c2d(sys, rocket.Ts);
+            [A, B, ~, ~] = ssdata(sys_d);
+            [~,Pf,~] = dlqr(A, B, Q, R);
+
+            %reference
             ref = SX.sym('ref', nx, 1); ref(:) = zeros(size(ref));
             ref([10 11 12 5]) = ref_sym;
             h = rocket.Ts;
@@ -69,7 +79,7 @@ classdef NmpcControl < handle
                 eq_constr = [eq_constr; X_sym(:,k) + h/6*(k1 + 2*k2 + 2*k3 + k4) - X_sym(:,k+1)];
                 cost = cost + (X_sym(:,k)-ref)'*Q*(X_sym(:,k)-ref) + U_sym(:,k)'*R*U_sym(:,k);
             end
-            cost = cost + (X_sym(:,N)-ref)'*Q*(X_sym(:,N)-ref);
+            cost = cost + (X_sym(:,N)-ref)'*Pf*(X_sym(:,N)-ref);
 
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
