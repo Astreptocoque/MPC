@@ -13,7 +13,7 @@ clear; close all;
 %% This file should produce all the plots for the deliverable
 Ts = 1/20;
 rocket = Rocket(Ts);
-H = 4; % Horizon length in seconds
+H = 3; % Horizon length in seconds
 nmpc = NmpcControl(rocket, H);
 
 % Evaluate once and plot optimal open−loop trajectory,
@@ -23,16 +23,18 @@ ref = [10; 10; 10; deg2rad(45)];
 [u, T_opt, X_opt, U_opt] = nmpc.get_u(x, ref);
 U_opt(:,end+1) = nan;
 ph = rocket.plotvis(T_opt, X_opt, U_opt, ref);
+exportgraphics(ph.fig, "Deliverable_6_1/Figures/6.1_openloop.png")
 
 % MPC reference with default maximum roll = 15 deg
-% ref = @(t_, x_) ref_EPFL(t_);
+ref = @(t_, x_) ref_EPFL(t_);
 % MPC reference with specified maximum roll = 50 deg
-roll_max = deg2rad(50);
-ref = @(t_, x_) ref_EPFL(t_, roll_max);
+% roll_max = deg2rad(50);
+% ref = @(t_, x_) ref_EPFL(t_, roll_max);
 
+% rocket.mass = 1.794;
 Tf = 30;
 [T, X, U, Ref] = rocket.simulate(x0, Tf, @nmpc.get_u, ref);
-
 % Visualize
 rocket.anim_rate = 10; % Increase this to make the animation faster
 ph = rocket.plotvis(T, X, U, Ref);
+exportgraphics(ph.fig, "Deliverable_6_1/Figures/6.1_closedloop.png")
