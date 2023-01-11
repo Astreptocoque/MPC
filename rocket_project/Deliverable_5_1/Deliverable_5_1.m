@@ -33,7 +33,7 @@ mpc = rocket.merge_lin_controllers(xs, us, mpc_x, mpc_y, mpc_z, mpc_roll);
 % U_opt(:,end+1) = nan;
 % ph = rocket.plotvis(T_opt, X_opt, U_opt, ref4); % Plot as usual
 
-rocket.mass = 5.794; % Manipulate mass for simulation
+rocket.mass = 1.794; % Manipulate mass for simulation
 
 % Setup reference function
 ref = @(t_, x_) ref_EPFL(t_);
