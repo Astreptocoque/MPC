@@ -1,6 +1,6 @@
 %% Setup path to have no conflict
 addpath(fullfile('src'));
-addpath(fullfile('Deliverable_4_2'),"-begin")
+addpath(fullfile('Deliverable_6_1'),"-begin")
 warning('off','MATLAB:rmpath:DirNotFound')
 rmpath(fullfile('Deliverable_3_1'))
 rmpath(fullfile('Deliverable_3_2'))
@@ -13,7 +13,7 @@ clear; close all;
 %% This file should produce all the plots for the deliverable
 Ts = 1/20;
 rocket = Rocket(Ts);
-H = 3; % Horizon length in seconds
+H = 4; % Horizon length in seconds
 nmpc = NmpcControl(rocket, H);
 
 % Evaluate once and plot optimal open−loop trajectory,
@@ -25,10 +25,10 @@ U_opt(:,end+1) = nan;
 ph = rocket.plotvis(T_opt, X_opt, U_opt, ref);
 
 % MPC reference with default maximum roll = 15 deg
-ref = @(t_, x_) ref_EPFL(t_);
+% ref = @(t_, x_) ref_EPFL(t_);
 % MPC reference with specified maximum roll = 50 deg
 roll_max = deg2rad(50);
-% ref = @(t_, x_) ref_EPFL(t_, roll_max);
+ref = @(t_, x_) ref_EPFL(t_, roll_max);
 
 Tf = 30;
 [T, X, U, Ref] = rocket.simulate(x0, Tf, @nmpc.get_u, ref);
